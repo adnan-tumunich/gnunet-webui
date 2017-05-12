@@ -41,21 +41,25 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
           $scope.nonce = keyval[1];
         }
         $scope.goToIdentity = function (identity) {
-          $window.location.href = "/index.html#/identities/"
+        
+          var loc = "/index.html#/identities/"
             +identity.id
             +"?redirect_uri="+$scope.redirect_uri
             +"&issue_type="+$scope.issue_type
             +"&requested_attrs="+$scope.requested_attrs
-            +"&requested_verified_attrs="+$scope.requested_verified_attrs
             +"&client_id="+$scope.client_id
             +"&nonce="+$scope.nonce;
+          if ($scope.requested_verified_attrs !== undefined){
+            loc = loc+"&requested_verified_attrs="+$scope.requested_verified_attrs;
+          }
+          $window.location.href = loc;
           return;
         }
-        ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
+       /* ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
           if (data.data.length === 1) {
             $scope.selectIdentity = data.data[0].attributes.name;
           }
-        });
+        });*/
       }
     }
     $scope.addIdentity = function() {
@@ -191,11 +195,11 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       localStorage.setItem ('default_identities', JSON.stringify ($scope.audiences));
 
       if (undefined != $scope.client_id) {
-        ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
+        /*ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
           if (data.data.length === 1) {
             $scope.selectIdentity = data.data[0].attributes.name;
           }
-        });
+        });*/
       }
 
       for (var i = 0; i < $scope.requestedInfos.length; i++) {
@@ -259,10 +263,10 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
         }
         for (var i = 0; i < attributes.data.length; i++) {
           var aud = $scope.getSubjectForGrant(attributes.data[i]);
-          ReverseNames.query({zkey:aud}).$promise.then (function(data) {
+         /* ReverseNames.query({zkey:aud}).$promise.then (function(data) {
             $scope.audRealNames[aud] = aud;
             $scope.audRealNames[data.data.id] = data.data.attributes.name;
-          });
+          });*/
         }
         $scope.grants = attributes;
       });
