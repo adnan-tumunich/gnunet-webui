@@ -4,48 +4,59 @@
 
 var identityServices = angular.module('identityServices', ['ngResource']);
 
-identityServices.factory('Identity', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/identity/:identityId', { identityId : '@id'}, {
+
+identityServices.factory('Host', 
+  function(){
+    return {
+      ipAddress: '192.168.33.10'
+    };
+    
+  });
+
+
+
+identityServices.factory('Identity', ['$resource', 'Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/identity/:identityId', { identityId : '@id'}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
   }]);
 
-identityServices.factory('Attributes', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/names/:attrName?ego=:identityName&record_type=ID_ATTR', {}, {
+identityServices.factory('Attributes', ['$resource', 'Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/names/:attrName?ego=:identityName&record_type=ID_ATTR', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
   }]);
-identityServices.factory('Credentials', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/names/:attrName?ego=:identityName&record_type=CRED', {}, {
+identityServices.factory('Credentials', ['$resource','Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/names/:attrName?ego=:identityName&record_type=CRED', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
   }]);
-identityServices.factory('SaveCredentials', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/names/');
+identityServices.factory('SaveCredentials', ['$resource','Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/names/');
   }]);
-identityServices.factory('ReverseNames', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/names/zkey?zkey=:zkey', {}, {
+identityServices.factory('ReverseNames', ['$resource','Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/names/zkey?zkey=:zkey', {}, {
       query: {method:'GET', params:{}, isArray:false},
     });
   }]);
-identityServices.factory('IdTokenIssuer', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce&requested_verified_attrs=:verified_attributes', {}, {
+identityServices.factory('IdTokenIssuer', ['$resource','Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce&requested_verified_attrs=:verified_attributes', {}, {
       issue: {method:'GET', params:{}, isArray:false},
     });
   }]);
 
-identityServices.factory('Grants', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/names/:recordName?ego=:identityName&record_type=ID_TOKEN_METADATA', {}, {
+identityServices.factory('Grants', ['$resource','Host',
+  function($resource,Host){
+    return $resource('http://'+Host.ipAddress+':7776/names/:recordName?ego=:identityName&record_type=ID_TOKEN_METADATA', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
